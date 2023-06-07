@@ -229,6 +229,15 @@ namespace OscCore
             m_Writer.WriteAddressAndTags(address, k_InfinitumTypeTagBytes);
             m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
         }
+
+        /// <summary>
+        /// Send the writer's buffer over the currently connected socket.
+        /// Used in combination with custom external usage of OscClient.Writer
+        /// </summary>
+        public void ForceSendBuffer()
+        {
+            m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
+        }
         
         static unsafe uint[] GetAlignedAsciiBytes(string input)
         {
