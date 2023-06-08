@@ -7,8 +7,8 @@ namespace OscCore
 {
     public class OscClient
     {
-        readonly Socket m_Socket;
-        readonly OscWriter m_Writer;
+        protected readonly Socket m_Socket;
+        protected readonly OscWriter m_Writer;
 
         /// <summary>Serializes outgoing messages</summary>
         public OscWriter Writer => m_Writer;
