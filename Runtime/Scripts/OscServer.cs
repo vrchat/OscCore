@@ -44,6 +44,10 @@ namespace OscCore
         public int Port { get; }
         public OscAddressSpace AddressSpace { get; private set; }
         public OscParser Parser { get; }
+
+        // Delayed handling of bundle message callbacks is not implemented,
+        // but access to the timestamp of the last bundle is available here.
+        public MiniNtp.NtpTimestamp LastBundleTimestamp { get; private set; }
         
         public OscServer(int port, int bufferSize = 4096)
         {
@@ -257,8 +261,8 @@ namespace OscCore
             // the outer do-while loop runs once for every #bundle encountered
             do
             {
-                // Timestamp isn't used yet, but it will be eventually
-                // var time = parser.MessageValues.ReadTimestampIndex(MessageOffset + 8);
+                // Delayed timestamp based callback handling isn't yet implemented
+                LastBundleTimestamp = parser.MessageValues.ReadTimestampIndex(MessageOffset + 8);
                 // '#bundle ' + timestamp = 16 bytes
                 MessageOffset += 16;
                 recurse = false;

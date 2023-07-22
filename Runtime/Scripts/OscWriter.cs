@@ -190,6 +190,14 @@ namespace OscCore
             m_Length += 8;
         }
 
+        /// <summary>Convenience function to write a 64-bit NTP timestamp element for the curernt system time</summary>
+        public void WriteCurrentTimestamp()
+        {
+            NtpTimestamp time = new NtpTimestamp(DateTime.Now);
+            time.ToBigEndianBytes((uint*)(m_BufferPtr + m_Length));
+            m_Length += 8;
+        }
+
         /// <summary>Write a single ascii character element</summary>
         public void Write(char data)
         {

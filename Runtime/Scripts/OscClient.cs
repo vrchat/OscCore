@@ -7,8 +7,8 @@ namespace OscCore
 {
     public class OscClient
     {
-        readonly Socket m_Socket;
-        readonly OscWriter m_Writer;
+        protected readonly Socket m_Socket;
+        protected readonly OscWriter m_Writer;
 
         /// <summary>Serializes outgoing messages</summary>
         public OscWriter Writer => m_Writer;
@@ -91,6 +91,17 @@ namespace OscCore
             m_Writer.Write(element);
             m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
         }
+        /// <summary>Send a message with 2 32-bit float elements</summary>
+        public void Send(string address, float element1, float element2)
+        {
+            m_Writer.Reset();
+            m_Writer.Write(address);
+            const string typeTags = ",ff";
+            m_Writer.Write(typeTags);
+            m_Writer.Write(element1);
+            m_Writer.Write(element2);
+            m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
+        }
 
         /// <summary>Send a message with 3 32-bit float elements</summary>
         public void Send(string address, Vector3 element)
@@ -102,7 +113,45 @@ namespace OscCore
             m_Writer.Write(element);
             m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
         }
-        
+
+        /// <summary>Send a message with 3 32-bit float elements</summary>
+        public void Send(string address, float element1, float element2, float element3)
+        {
+            m_Writer.Reset();
+            m_Writer.Write(address);
+            const string typeTags = ",fff";
+            m_Writer.Write(typeTags);
+            m_Writer.Write(element1);
+            m_Writer.Write(element2);
+            m_Writer.Write(element3);
+            m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
+        }
+
+        /// <summary>Send a message with 4 32-bit float elements</summary>
+        public void Send(string address, float element1, float element2, float element3, float element4)
+        {
+            m_Writer.Reset();
+            m_Writer.Write(address);
+            const string typeTags = ",ffff";
+            m_Writer.Write(typeTags);
+            m_Writer.Write(element1);
+            m_Writer.Write(element2);
+            m_Writer.Write(element3);
+            m_Writer.Write(element4);
+            m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
+        }
+        /// <summary>Send a message with 2 32-bit float Vector3 elements for a total of 6 floats</summary>
+        public void Send(string address, Vector3 element1, Vector3 element2)
+        {
+            m_Writer.Reset();
+            m_Writer.Write(address);
+            const string typeTags = ",ffffff";
+            m_Writer.Write(typeTags);
+            m_Writer.Write(element1);
+            m_Writer.Write(element2);
+            m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
+        }
+
         const uint k_Int64TypeTagBytes = 25644;    // ",d  " 
         
         /// <summary>Send a message with a single 64-bit float element</summary>
@@ -178,6 +227,15 @@ namespace OscCore
         public void SendInfinitum(string address)
         {
             m_Writer.WriteAddressAndTags(address, k_InfinitumTypeTagBytes);
+            m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
+        }
+
+        /// <summary>
+        /// Send the writer's buffer over the currently connected socket.
+        /// Used in combination with custom external usage of OscClient.Writer
+        /// </summary>
+        public void ForceSendBuffer()
+        {
             m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
         }
         
