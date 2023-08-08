@@ -25,7 +25,7 @@ namespace OscCore
                 case TypeTag.String:
                     var length = 0;
                     while (m_SharedBuffer[offset + length] != byte.MinValue) length++;
-                    return Encoding.ASCII.GetString(m_SharedBuffer, offset, length);
+                    return Encoding.UTF8.GetString(m_SharedBuffer, offset, length);
                 case TypeTag.Float64:
                     m_SwapBuffer64[7] = m_SharedBuffer[offset];
                     m_SwapBuffer64[6] = m_SharedBuffer[offset + 1];
