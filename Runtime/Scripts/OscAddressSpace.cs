@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -12,7 +11,7 @@ namespace OscCore
         const int k_DefaultCapacity = 16;
 
         StringBuilder escapedStringBuilder = new StringBuilder();
-        char[] specialRegexCharacters = new char[] { '.', '^', '$', '*', '+', '?', '{', '}', '[', ']', '\\', '|', '(', ')' };
+        HashSet<char> specialRegexCharactersSet = new HashSet<char>(new char[] { '.', '^', '$', '*', '+', '?', '{', '}', '[', ']', '\\', '|', '(', ')' });
 
         internal readonly OscAddressMethods AddressToMethod;
         
