@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace OscCore
@@ -8,6 +10,9 @@ namespace OscCore
     {
         const int k_DefaultPatternCapacity = 8;
         const int k_DefaultCapacity = 16;
+
+        StringBuilder escapedStringBuilder = new StringBuilder();
+        char[] specialRegexCharacters = new char[] { '.', '^', '$', '*', '+', '?', '{', '}', '[', ']', '\\', '|', '(', ')' };
 
         internal readonly OscAddressMethods AddressToMethod;
         
@@ -30,11 +35,11 @@ namespace OscCore
 
         public bool TryAddMethod(string address, OscActionPair onReceived)
         {
-            if (string.IsNullOrEmpty(address) || onReceived == null) 
+            if (string.IsNullOrEmpty(address) || onReceived == null)
                 return false;
 
             switch (OscParser.GetAddressType(address))
-            {    
+            {
                 case AddressType.Address:
                     AddressToMethod.Add(address, onReceived);
                     return true;
@@ -62,7 +67,24 @@ namespace OscCore
                         }
                     }
 
-                    Patterns[index] = new Regex(address);
+                    Regex regex = null;
+                    try
+                    {
+                        regex = new Regex(address); //don't escape the address if we don't need to
+                    }
+                    catch (ArgumentException e)
+                    {
+                        try
+                        {
+                            regex = new Regex(EscapeRegexSpecialCharacters(address)); //if we fail, try to escape the address for the regex
+                        }
+                        catch (Exception)
+                        {
+                            throw e; //throw original error if still can't parse even with escaped RegEx
+                        }
+                    }
+
+                    Patterns[index] = regex;
                     PatternMethods[index] = onReceived;
                     PatternStringToIndex[address] = index;
                     PatternCount++;
@@ -145,6 +167,29 @@ namespace OscCore
 
             return any;
         }
+
+        string EscapeRegexSpecialCharacters(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            // Using StringBuilder for efficiency when dealing with potentially large strings and multiple replacements
+            escapedStringBuilder.Clear();
+
+            foreach (char c in input)
+            {
+                // If the current character is a special character, prepend it with a backslash
+                if (specialRegexCharacters.Contains(c))
+                {
+                    escapedStringBuilder.Append('\\');
+                }
+
+                escapedStringBuilder.Append(c);
+            }
+
+            return escapedStringBuilder.ToString();
+        }
     }
 }
-
