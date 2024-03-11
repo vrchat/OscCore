@@ -11,7 +11,7 @@ namespace OscCore
         const int k_DefaultCapacity = 16;
 
         StringBuilder escapedStringBuilder = new StringBuilder();
-        HashSet<char> specialRegexCharactersSet = new HashSet<char>(new char[] { '.', '^', '$', '*', '+', '?', '{', '}', '[', ']', '\\', '|', '(', ')' });
+        HashSet<char> specialRegexCharacters = new HashSet<char>(new char[] { '.', '^', '$', '*', '+', '?', '{', '}', '[', ']', '\\', '|', '(', ')' });
 
         internal readonly OscAddressMethods AddressToMethod;
         
