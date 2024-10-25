@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -108,7 +107,10 @@ namespace OscCore
             }
 
             m_ThreadWakeup.Dispose();
+
+#if UNITY_EDITOR
             Profiler.EndThreadProfiling();
+#endif
         }
 
         public void Dispose()
