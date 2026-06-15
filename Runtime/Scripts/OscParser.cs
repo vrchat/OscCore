@@ -25,7 +25,7 @@ namespace OscCore
         public OscParser(byte[] fixedBuffer)
         {
             Buffer = fixedBuffer;
-            fixed (byte* ptr = fixedBuffer)
+            fixed (byte* ptr = fixedBuffer) // safety: pinned by caller via GCHandle, see OscServer.cs
             {
                 BufferPtr = ptr;
                 BufferLongPtr = (long*) ptr;
@@ -274,7 +274,7 @@ namespace OscCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsBundleTagAtIndex(int index)
         {
-            return *((long*) BufferPtr + index) == Constant.BundlePrefixLong;
+            return *(long*)(BufferPtr + index) == Constant.BundlePrefixLong;
         }
         
         public static int FindArrayLength(byte[] bytes, int offset = 0)
