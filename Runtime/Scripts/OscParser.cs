@@ -274,7 +274,16 @@ namespace OscCore
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsBundleTagAtIndex(int index)
         {
-            return *(long*)(BufferPtr + index) == Constant.BundlePrefixLong;
+            //return *((long*)BufferPtr + index) == Constant.BundlePrefixLong;
+
+            // VRChat, safety: to prevent issues with unaligned reads or incorrect pointer arithmetic (can you spot the bug above?),
+            // we just do this the safe way in managed land.
+            for (int i = 0; i < 8; i++)
+            {
+                if (Buffer[index + i] != Constant.BundlePrefixBytes[i])
+                    return false;
+            }
+            return true;
         }
         
         public static int FindArrayLength(byte[] bytes, int offset = 0)
