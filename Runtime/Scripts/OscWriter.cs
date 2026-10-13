@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using BlobHandles;
 using MiniNtp;
 using UnityEngine;
@@ -96,6 +97,16 @@ namespace OscCore
                 alignedLength += 4;
             
             for (int i = data.Length; i < alignedLength; i++)
+                Buffer[m_Length++] = 0;
+        }
+
+        /// <summary>Write a UTF-8 string value (an extension to OSC's ASCII strings).</summary>
+        public void WriteUtf8(string data)
+        {
+            var byteCount = Encoding.UTF8.GetBytes(data, 0, data.Length, Buffer, m_Length);
+            m_Length += byteCount;
+            var padding = 4 - (byteCount & 3); // includes the NUL terminator
+            for (int i = 0; i < padding; i++)
                 Buffer[m_Length++] = 0;
         }
 

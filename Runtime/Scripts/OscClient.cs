@@ -59,11 +59,11 @@ namespace OscCore
 
         const uint k_StringTypeTagBytes = 29484;    // ",s  " 
         
-        /// <summary>Send a message with a single string element</summary>
+        /// <summary>Send a message with a single UTF-8 string value (an OSC string extension)</summary>
         public void Send(string address, string element)
         {
             m_Writer.WriteAddressAndTags(address, k_StringTypeTagBytes);
-            m_Writer.Write(element);
+            m_Writer.WriteUtf8(element);
             m_Socket.Send(m_Writer.Buffer, m_Writer.Length, SocketFlags.None);
         }
         
